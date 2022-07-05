@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:news_app_testing/Routes.dart';
 import 'package:news_app_testing/article_page.dart';
+import 'package:news_app_testing/containers/ButtonWidget.dart';
 import 'package:news_app_testing/news_change_notifier.dart';
+import 'package:news_app_testing/pages/latest_posts/LatestPostPage.dart';
 import 'package:provider/provider.dart';
 
 class NewsPage extends StatefulWidget {
@@ -32,35 +35,71 @@ class _NewsPageState extends State<NewsPage> {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-            itemCount: notifier.articles.length,
-            itemBuilder: (_, index) {
-              final article = notifier.articles[index];
-              return Card(
-                elevation: 2,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => ArticlePage(article: article),
+          return Column(
+            children: [
+              SizedBox(height: 16),
+              Row(
+                children: [
+                  SizedBox(width: 16),
+                  ButtonWidget(
+                    key: Key("key-latest-posts"),
+                    title: "Latest Posts",
+                    bodyColor: Colors.red,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      Routes.push(
+                        context,
+                        LatestPostPage(),
+                      );
+                    },
+                  ),
+                  SizedBox(width: 16),
+                  ButtonWidget(
+                    key: Key("key-popular-posts"),
+                    title: "Popular Posts",
+                    bodyColor: Colors.grey,
+                    textColor: Colors.white,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: notifier.articles.length,
+                  itemBuilder: (_, index) {
+                    final article = notifier.articles[index];
+                    return Card(
+                      elevation: 2,
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (_) => ArticlePage(article: article),
+                          //   ),
+                          // );
+                          Routes.push(
+                            context,
+                            ArticlePage(article: article),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(article.title),
+                          subtitle: Text(
+                            article.content,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ),
                     );
                   },
-                  child: ListTile(
-                    title: Text(article.title),
-                    subtitle: Text(
-                      article.content,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
                   ),
                 ),
-              );
-            },
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 16,
-            ),
+              ),
+            ],
           );
         },
       ),
